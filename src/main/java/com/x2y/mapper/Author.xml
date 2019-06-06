@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.x2y.pojo">
+        <resultMap id="authorBean" type="Author">
+            <id column="auid" property="aid"/>
+            <result column="name" property="aname"/>
+            <!-- 一对多的关系 -->
+            <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+            <collection property="articles" ofType="Article">
+                <id column="arid" property="id"/>
+                <result column="title" property="title"/>
+                <result column="author_id" property="author_id"/>
+            </collection>
+        </resultMap>
+
+        <select id="listAuthorWorks" resultMap="authorBean">
+            select au.*,ar.*,au.id 'auid',ar.id 'arid'from author au left join article ar on ar.author_id = au.id
+        </select>
+</mapper>

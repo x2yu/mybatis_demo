@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.x2y.pojo">
+
+    <resultMap type="Article" id="articleBean">
+        <id column="arid" property="id"/>
+        <result column="title" property="title"/>
+        <result column="author_id" property="author_id"/>
+
+        <!-- property: 指的是属性名称, javaType：指的是属性的类型 -->
+        <association property="author" javaType="Author">
+            <id column="auid" property="aid"/>
+            <result column="name" property="aname"/>
+        </association>
+    </resultMap>
+
+    <!-- 根据id查询Product, 关联将Orders查询出来 -->
+    <select id="listArticleAndAuthor" resultMap="articleBean">
+           select ar.*,au.*,ar.id 'arid',au.id 'auid' from article ar left join author au on ar.author_id = au.id
+    </select>
+
+    <select id="getArticleAndAuthor" parameterType="int" resultMap="articleBean">
+           select ar.*,au.*,ar.id 'arid',au.id 'auid' from article ar left join author au on ar.author_id = au.id
+           where ar.id = #{id}
+    </select>
+
+    <select id="listArticleByList" resultType="Article">
+        select * from article where id in
+        <foreach item="item" index="index" collection="list"
+            open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
